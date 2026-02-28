@@ -1,4 +1,6 @@
-import { Table, Stack, For } from "@chakra-ui/react";
+import { Table, Stack } from "@chakra-ui/react";
+
+type Mode = { name: string; position: number };
 
 const KeysTable = () => {
 
@@ -6,6 +8,45 @@ const KeysTable = () => {
   const degrees = [
     'maj 7', 'min 7', 'min 7', 'maj 7', '7', 'min 7', 'min -5/7'
   ];
+  
+  
+
+
+  const modes = {
+    ionian: { name: 'Ionian', position: 0 },
+    dorian: { name: 'Dorian', posittion: 1 },
+    phrygian: { name: 'Phrygian', position: 2 },
+    lydian: { name: 'Lydian', position: 3 },
+    mixolydian: { name: 'Mixolydian', position: 4 },
+    eolian: { name: 'Eolian', position: 5 },
+    locrian: { name: 'Locrian', position: 6 }
+  };
+
+  const moveFirstToEnd = (array: (number|undefined) []) => {
+    const firstElement = array.shift();
+    return [...array, firstElement];
+  }
+
+  const createNaturalModeStepsArray = (mode: Mode): (number | undefined)[] => {
+    const naturalMajor = [2, 2, 1, 2, 2, 2, 1];
+    let scaleOutput: (number | undefined)[] = [...naturalMajor]
+    for (let i = 0; i <= mode.position; i++) {
+      scaleOutput = moveFirstToEnd(scaleOutput)
+    }
+    return scaleOutput;
+  }
+
+  const createScale = (steps: number[]): string[] => {
+    const chromaticNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+    const newScale = [];
+    let chromaticScaleIndex = 0;
+    newScale.push(chromaticNotes[chromaticScaleIndex])
+    for (const step of steps) {
+      chromaticScaleIndex = chromaticScaleIndex + step;
+      newScale.push(chromaticNotes[chromaticScaleIndex])
+    }
+    return newScale;
+  }
 
   const keys = [
     { id: 1, keyName: 'C', notes: notes },
@@ -24,13 +65,21 @@ const KeysTable = () => {
           <Table.Row>
             <Table.ColumnHeader>Key</Table.ColumnHeader>
             <Table.ColumnHeader>Notes</Table.ColumnHeader>
+            <Table.ColumnHeader>Mode</Table.ColumnHeader>
+            <Table.ColumnHeader>1</Table.ColumnHeader>
+            <Table.ColumnHeader>2</Table.ColumnHeader>
+            <Table.ColumnHeader>3</Table.ColumnHeader>
+            <Table.ColumnHeader>4</Table.ColumnHeader>
+            <Table.ColumnHeader>5</Table.ColumnHeader>
+            <Table.ColumnHeader>6</Table.ColumnHeader>
+            <Table.ColumnHeader>7</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {keys.map((key) => (
             <Table.Row key={key.id}>
               <Table.Cell>{key.keyName}</Table.Cell>
-              <Table.Cell>{key.notes.map(note => note)}</Table.Cell>
+              <Table.Cell>{createScale(naturalMajor).map(note => note)}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
