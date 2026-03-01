@@ -81,6 +81,7 @@ const KeysTable = () => {
             <Table.Row key={key.id}>
               <Table.Cell>{key.keyName}</Table.Cell>
               <Table.Cell>{createScale(createNaturalModeStepsArray(modes.dorian)).map(note => note)}</Table.Cell>
+              <Table.Cell>{modes.dorian.name}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
