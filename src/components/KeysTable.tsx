@@ -36,7 +36,6 @@ const KeysTable = () => {
   });
 
   const handleKeySelect = (key: string[]) => {
-    console.log('from handle key select', key)
     setSelectedKey(key)
   };
 
@@ -48,13 +47,18 @@ const KeysTable = () => {
   const listOfModes: ListCollection = createListCollection({
     items: Object.keys(modes).map((mode) => mode)
   }) ;
+
   const moveFirstToEnd = (array: (number|undefined) []) => {
     const firstElement = array.shift();
     return [...array, firstElement];
   }
 
+  const transformChromaticScale = (array: (string|undefined) []) => {
+    const firstElement = array.shift();
+    return [...array, firstElement];
+  }
+
   const createNaturalModeStepsArray = (mode: Mode): (number | undefined)[] => {
-    console.log(mode);
     const naturalMajor = [2, 2, 1, 2, 2, 2, 1];
     let steps: (number | undefined)[] = [...naturalMajor]
     for (let i = 0; i < mode.position; i++) {
@@ -65,14 +69,23 @@ const KeysTable = () => {
     return steps;
   }
 
-  const createScale = (steps: (number|undefined)[]): string[] => {
+  const createScale = (steps: (number|undefined)[], key: string): (string|undefined)[] => {
+    const startingIndex = chromaticNotes.indexOf(key);
+    
     const newScale = [];
+
+    let adjustedChromaticScale: (string | undefined)[] = [...chromaticNotes];
+    console.log()
+    for (let i = 0; i < startingIndex; i++) {
+      adjustedChromaticScale = transformChromaticScale(adjustedChromaticScale)
+    }
+
     let chromaticScaleIndex = 0;
-    newScale.push(chromaticNotes[chromaticScaleIndex])
+    newScale.push(adjustedChromaticScale[chromaticScaleIndex])
     for (const step of steps) {
       if (step) {
         chromaticScaleIndex = chromaticScaleIndex + step;
-        newScale.push(chromaticNotes[chromaticScaleIndex])
+        newScale.push(adjustedChromaticScale[chromaticScaleIndex])
       }
     }
     return newScale;
@@ -113,8 +126,8 @@ const KeysTable = () => {
                   label={'mode'}
                 />
               </Table.Cell>
-              <Table.Cell>{createScale(createNaturalModeStepsArray(modes[selectedMode[0]])).map(note => <span >{note}</span>)}</Table.Cell>
-              {createScale(createNaturalModeStepsArray(modes[selectedMode[0]])).map(note => <Table.Cell key={note}>{note}</Table.Cell>)}
+              <Table.Cell>{createScale(createNaturalModeStepsArray(modes[selectedMode[0]]), selectedKey[0]).map(note => <span >{note}</span>)}</Table.Cell>
+              {createScale(createNaturalModeStepsArray(modes[selectedMode[0]]), selectedKey[0]).map(note => <Table.Cell key={note}>{note}</Table.Cell>)}
             </Table.Row>
         </Table.Body>
         </Table.Root>
