@@ -9,12 +9,9 @@ const KeysTable = () => {
     'maj 7', 'min 7', 'min 7', 'maj 7', '7', 'min 7', 'min -5/7'
   ];
   
-  
-
-
   const modes = {
     ionian: { name: 'Ionian', position: 0 },
-    dorian: { name: 'Dorian', posittion: 1 },
+    dorian: { name: 'Dorian', position: 1 },
     phrygian: { name: 'Phrygian', position: 2 },
     lydian: { name: 'Lydian', position: 3 },
     mixolydian: { name: 'Mixolydian', position: 4 },
@@ -29,21 +26,25 @@ const KeysTable = () => {
 
   const createNaturalModeStepsArray = (mode: Mode): (number | undefined)[] => {
     const naturalMajor = [2, 2, 1, 2, 2, 2, 1];
-    let scaleOutput: (number | undefined)[] = [...naturalMajor]
-    for (let i = 0; i <= mode.position; i++) {
-      scaleOutput = moveFirstToEnd(scaleOutput)
+    let steps: (number | undefined)[] = [...naturalMajor]
+    for (let i = 0; i < mode.position; i++) {
+      steps = moveFirstToEnd(steps)
     }
-    return scaleOutput;
+    steps.pop()
+
+    return steps;
   }
 
-  const createScale = (steps: number[]): string[] => {
+  const createScale = (steps: (number|undefined)[]): string[] => {
     const chromaticNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
     const newScale = [];
     let chromaticScaleIndex = 0;
     newScale.push(chromaticNotes[chromaticScaleIndex])
     for (const step of steps) {
-      chromaticScaleIndex = chromaticScaleIndex + step;
-      newScale.push(chromaticNotes[chromaticScaleIndex])
+      if (step) {
+        chromaticScaleIndex = chromaticScaleIndex + step;
+        newScale.push(chromaticNotes[chromaticScaleIndex])
+      }
     }
     return newScale;
   }
@@ -79,7 +80,7 @@ const KeysTable = () => {
           {keys.map((key) => (
             <Table.Row key={key.id}>
               <Table.Cell>{key.keyName}</Table.Cell>
-              <Table.Cell>{createScale(naturalMajor).map(note => note)}</Table.Cell>
+              <Table.Cell>{createScale(createNaturalModeStepsArray(modes.dorian)).map(note => note)}</Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
